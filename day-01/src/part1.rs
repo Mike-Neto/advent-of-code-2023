@@ -1,6 +1,8 @@
+use rayon::{iter::ParallelIterator, str::ParallelString};
+
 pub fn process(input: &str) -> anyhow::Result<usize> {
     Ok(input
-        .lines()
+        .par_lines()
         .map(|line| {
             let mut it = line.chars();
             let first = it.find(char::is_ascii_digit).unwrap_or('0');

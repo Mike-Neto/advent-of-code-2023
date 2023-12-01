@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = { workspace = true }
+rayon = { workspace = true }
 
 [dev-dependencies]
 divan = { workspace = true }

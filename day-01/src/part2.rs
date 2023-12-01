@@ -1,10 +1,12 @@
+use rayon::{iter::ParallelIterator, str::ParallelString};
+
 static SPELLED: [&str; 9] = [
     "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
 ];
 
 pub fn process(input: &str) -> anyhow::Result<usize> {
     Ok(input
-        .lines()
+        .par_lines()
         .map(|line| {
             let mut it = line.chars().enumerate().filter_map(|(count, c)| {
                 if c.is_ascii_digit() {
