@@ -1,40 +1,33 @@
-pub fn process(input: &str) -> anyhow::Result<String> {
+static SPELLED: [&str; 9] = [
+    "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+];
+
+pub fn process(input: &str) -> anyhow::Result<usize> {
     Ok(input
         .lines()
         .map(|line| {
-            let spelled = [
-                "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-            ];
-            let mut results: Vec<usize> = vec![];
-            for (index, c) in line.chars().enumerate() {
+            let mut it = line.chars().enumerate().filter_map(|(count, c)| {
                 if c.is_ascii_digit() {
-                    results.push(
-                        format!("{c}")
-                            .parse::<usize>()
-                            .expect("Checked ascii digits failed to parse to usize"),
-                    );
+                    return Some(c);
                 } else {
-                    let sub = line.chars().skip(index).collect::<String>();
-                    if let Some(digit) = spelled.iter().position(|&digit| sub.starts_with(digit)) {
-                        results.push(digit + 1);
+                    let sub_line = line.chars().skip(count).collect::<String>();
+                    if let Some(index) = SPELLED
+                        .iter()
+                        .position(|&digit| sub_line.starts_with(digit))
+                    {
+                        return Some((index + 49) as u32 as u8 as char); // like wft, but + 48 for ascii offset + 1 for index offset
+                    } else {
+                        return None;
                     }
                 }
-            }
-            results
+            });
+            let first = it.next().unwrap_or('0');
+            let last = it.last().unwrap_or(first);
+            format!("{first}{last}")
+                .parse::<usize>()
+                .expect("Checked ascii digits failed to parse to usize")
         })
-        .filter_map(|numbers| {
-            if let (Some(first), Some(last)) = (numbers.first(), numbers.last()) {
-                Some(
-                    format!("{first}{last}")
-                        .parse::<usize>()
-                        .expect("Checked ascii digits failed to parse to usize"),
-                )
-            } else {
-                None
-            }
-        })
-        .sum::<usize>()
-        .to_string())
+        .sum())
 }
 
 #[cfg(test)]
@@ -44,7 +37,7 @@ mod tests {
     #[test]
     fn it_works() -> anyhow::Result<()> {
         let input = include_str!("../example2.txt");
-        assert_eq!("281", process(input)?);
+        assert_eq!(281, process(input)?);
         Ok(())
     }
 }
