@@ -7,16 +7,10 @@ fn main() {
 
 #[divan::bench]
 fn part1() {
-    part1::process(divan::black_box(include_str!(
-        "../data.txt",
-    )))
-    .unwrap();
+    let _ = part1::process(divan::black_box(include_str!("../data.txt",)));
 }
 
 #[divan::bench]
 fn part2() {
-    part2::process(divan::black_box(include_str!(
-        "../data.txt",
-    )))
-    .unwrap();
+    let _ = part2::process(divan::black_box(include_str!("../data.txt",)));
 }
