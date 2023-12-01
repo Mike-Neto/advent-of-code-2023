@@ -1,24 +1,15 @@
-pub fn process(input: &str) -> anyhow::Result<String> {
+pub fn process(input: &str) -> anyhow::Result<usize> {
     Ok(input
         .lines()
         .map(|line| {
-            line.chars()
-                .filter(|c| c.is_ascii_digit())
-                .collect::<Vec<char>>()
+            let mut it = line.chars();
+            let first = it.find(char::is_ascii_digit).unwrap_or_default();
+            let last = it.rev().find(char::is_ascii_digit).unwrap_or(first);
+            format!("{first}{last}")
+                .parse::<usize>()
+                .expect("Checked ascii digits failed to parse to usize")
         })
-        .filter_map(|numbers| {
-            if let (Some(first), Some(last)) = (numbers.first(), numbers.last()) {
-                Some(
-                    format!("{first}{last}")
-                        .parse::<usize>()
-                        .expect("Checked ascii digits failed to parse to usize"),
-                )
-            } else {
-                None
-            }
-        })
-        .sum::<usize>()
-        .to_string())
+        .sum())
 }
 
 #[cfg(test)]
@@ -28,7 +19,7 @@ mod tests {
     #[test]
     fn it_works() -> anyhow::Result<()> {
         let input = include_str!("../example.txt");
-        assert_eq!("142", process(input)?);
+        assert_eq!(142, process(input)?);
         Ok(())
     }
 }

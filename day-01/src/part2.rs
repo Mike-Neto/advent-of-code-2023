@@ -16,7 +16,7 @@ pub fn process(input: &str) -> anyhow::Result<String> {
                 } else {
                     let sub = line.chars().skip(index).collect::<String>();
                     if let Some(digit) = spelled.iter().position(|&digit| sub.starts_with(digit)) {
-                        results.push(digit + 1)
+                        results.push(digit + 1);
                     }
                 }
             }
