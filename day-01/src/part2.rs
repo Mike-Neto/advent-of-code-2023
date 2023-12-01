@@ -10,12 +10,12 @@ pub fn process(input: &str) -> anyhow::Result<usize> {
                 if c.is_ascii_digit() {
                     return Some(c);
                 } else {
-                    let sub_line = line.chars().skip(count).collect::<String>();
+                    let line_sub_str = line.get(count..).unwrap_or_default();
                     if let Some(index) = SPELLED
                         .iter()
-                        .position(|&digit| sub_line.starts_with(digit))
+                        .position(|&digit| line_sub_str.starts_with(digit))
                     {
-                        return Some((index + 49) as u32 as u8 as char); // like wft, but + 48 for ascii offset + 1 for index offset
+                        return Some((index + 49) as u8 as char); // like wft, but + 48 for ascii offset + 1 for index offset
                     } else {
                         return None;
                     }

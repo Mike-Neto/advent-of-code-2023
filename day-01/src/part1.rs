@@ -3,7 +3,7 @@ pub fn process(input: &str) -> anyhow::Result<usize> {
         .lines()
         .map(|line| {
             let mut it = line.chars();
-            let first = it.find(char::is_ascii_digit).unwrap_or_default();
+            let first = it.find(char::is_ascii_digit).unwrap_or('0');
             let last = it.rev().find(char::is_ascii_digit).unwrap_or(first);
             format!("{first}{last}")
                 .parse::<usize>()
