@@ -13,7 +13,7 @@ pub fn process(input: &str) -> usize {
             let mut it = line.chars().enumerate().filter_map(|(count, c)| {
                 if c.is_ascii_digit() {
                     return Some(c);
-                } 
+                }
                 let line_sub_str = line.get(count..).unwrap_or_default();
                 if let Some(index) = SPELLED
                     .iter()
