@@ -113,6 +113,7 @@ dependencies = [
  "anyhow",
  "divan",
  "nom",
+ "rayon",
 ]
 
 [[package]]
