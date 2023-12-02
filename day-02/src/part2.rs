@@ -2,7 +2,11 @@ use crate::{parse_games, Color};
 
 static COLORS: [Color; 3] = [Color::Red, Color::Green, Color::Blue];
 
+/// # Errors
+///
+/// Will return `Err` parsing fails
 pub fn process(input: &str) -> anyhow::Result<u64> {
+    #[allow(clippy::redundant_closure_for_method_calls)]
     let (_, games) = parse_games(input).map_err(|err| err.to_owned())?;
 
     Ok(games

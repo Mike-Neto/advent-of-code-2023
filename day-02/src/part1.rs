@@ -4,7 +4,11 @@ static BAG_RED: u64 = 12;
 static BAG_GREEN: u64 = 13;
 static BAG_BLUE: u64 = 14;
 
+/// # Errors
+///
+/// Will return `Err` parsing fails
 pub fn process(input: &str) -> anyhow::Result<u64> {
+    #[allow(clippy::redundant_closure_for_method_calls)]
     let (_, games) = parse_games(input).map_err(|err| err.to_owned())?;
 
     Ok(games
