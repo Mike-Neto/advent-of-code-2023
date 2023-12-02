@@ -12,5 +12,5 @@ fn part1() {
 
 #[divan::bench]
 fn part2() {
-    part2::process(divan::black_box(include_str!("../data.txt",))).unwrap();
+    let _ = part2::process(divan::black_box(include_str!("../data.txt",)));
 }

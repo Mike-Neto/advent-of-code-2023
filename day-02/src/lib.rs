@@ -3,7 +3,7 @@ pub mod part2;
 
 use nom::{
     bytes::complete::tag,
-    character::complete::{alpha1, newline, u64},
+    character::complete::{alpha1, u64},
     multi::separated_list1,
     sequence::delimited,
 };
@@ -51,8 +51,4 @@ fn parse_game(input: &str) -> nom::IResult<&str, Game> {
     let (input, sets) = separated_list1(tag("; "), parse_set)(input)?;
 
     Ok((input, Game { id, sets }))
-}
-
-fn parse_games(input: &str) -> nom::IResult<&str, Vec<Game>> {
-    separated_list1(newline, parse_game)(input)
 }

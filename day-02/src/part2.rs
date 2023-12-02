@@ -1,39 +1,42 @@
-use crate::{parse_games, Color};
+use rayon::{iter::ParallelIterator, str::ParallelString};
+
+use crate::{parse_game, Color};
 
 static COLORS: [Color; 3] = [Color::Red, Color::Green, Color::Blue];
 
-/// # Errors
-///
-/// Will return `Err` parsing fails
-pub fn process(input: &str) -> anyhow::Result<u64> {
-    #[allow(clippy::redundant_closure_for_method_calls)]
-    let (_, games) = parse_games(input).map_err(|err| err.to_owned())?;
-
-    Ok(games
-        .into_iter()
-        .map(|g| {
-            COLORS
-                .iter()
-                .filter_map(|color| {
-                    g.sets
-                        .iter()
-                        .map(|set| {
-                            set.iter()
-                                .filter_map(|c| {
-                                    if c.color == *color {
-                                        Some(c.number)
-                                    } else {
-                                        None
-                                    }
-                                })
-                                .max()
-                        })
-                        .max()
-                        .unwrap_or_default()
-                })
-                .product::<u64>()
+#[must_use]
+pub fn process(input: &str) -> u64 {
+    input
+        .par_lines()
+        .filter_map(|line| match parse_game(line) {
+            Ok((_, g)) => Some(
+                COLORS
+                    .iter()
+                    .filter_map(|color| {
+                        g.sets
+                            .iter()
+                            .map(|set| {
+                                set.iter()
+                                    .filter_map(|c| {
+                                        if c.color == *color {
+                                            Some(c.number)
+                                        } else {
+                                            None
+                                        }
+                                    })
+                                    .max()
+                            })
+                            .max()
+                            .unwrap_or_default()
+                    })
+                    .product::<u64>(),
+            ),
+            Err(err) => {
+                println!("{err}");
+                None
+            }
         })
-        .sum::<u64>())
+        .sum::<u64>()
 }
 
 #[cfg(test)]
@@ -41,9 +44,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn it_works() -> anyhow::Result<()> {
+    fn it_works() {
         let input = include_str!("../example.txt");
-        assert_eq!(2286, process(input)?);
-        Ok(())
+        assert_eq!(2286, process(input));
     }
 }
