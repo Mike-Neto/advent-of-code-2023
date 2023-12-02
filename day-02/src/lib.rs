@@ -8,21 +8,37 @@ use nom::{
     sequence::delimited,
 };
 
+#[derive(Debug, PartialEq)]
+enum Color {
+    Red,
+    Green,
+    Blue,
+}
+
 #[derive(Debug)]
-struct Cube<'a> {
-    color: &'a str,
+struct Cube {
+    color: Color,
     number: u64,
 }
 
 #[derive(Debug)]
-struct Game<'a> {
+struct Game {
     id: u64,
-    sets: Vec<Vec<Cube<'a>>>,
+    sets: Vec<Vec<Cube>>,
 }
+
 fn parse_cube(input: &str) -> nom::IResult<&str, Cube> {
     let (input, number) = u64(input)?;
     let (input, _) = tag(" ")(input)?;
-    let (input, color) = alpha1(input)?;
+    let (input, color) = alpha1(input).map(|(input, c)| {
+        let color = match c {
+            "red" => Color::Red,
+            "green" => Color::Green,
+            "blue" => Color::Blue,
+            _ => unreachable!("only 3 colors supported"),
+        };
+        (input, color)
+    })?;
     Ok((input, Cube { color, number }))
 }
 

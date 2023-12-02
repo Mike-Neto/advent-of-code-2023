@@ -1,7 +1,7 @@
-use crate::parse_games;
+use crate::{parse_games, Color};
 
 pub fn process(input: &str) -> anyhow::Result<String> {
-    let (_, games) = parse_games(input).unwrap(); // TODO Propagate error.
+    let (_, games) = parse_games(input).map_err(|err| err.to_owned())?;
 
     Ok(games
         .into_iter()
@@ -9,19 +9,31 @@ pub fn process(input: &str) -> anyhow::Result<String> {
             let reds = g
                 .sets
                 .iter()
-                .filter_map(|c| c.into_iter().find(|c| c.color == "red").map(|c| c.number))
+                .filter_map(|c| {
+                    c.into_iter()
+                        .find(|c| c.color == Color::Red)
+                        .map(|c| c.number)
+                })
                 .max()
                 .unwrap_or_default();
             let greens = g
                 .sets
                 .iter()
-                .filter_map(|c| c.into_iter().find(|c| c.color == "green").map(|c| c.number))
+                .filter_map(|c| {
+                    c.into_iter()
+                        .find(|c| c.color == Color::Green)
+                        .map(|c| c.number)
+                })
                 .max()
                 .unwrap_or_default();
             let blues = g
                 .sets
                 .iter()
-                .filter_map(|c| c.into_iter().find(|c| c.color == "blue").map(|c| c.number))
+                .filter_map(|c| {
+                    c.into_iter()
+                        .find(|c| c.color == Color::Blue)
+                        .map(|c| c.number)
+                })
                 .max()
                 .unwrap_or_default();
             reds * greens * blues
