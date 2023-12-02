@@ -4,6 +4,6 @@ fn main() -> anyhow::Result<()> {
     let file = include_str!("../../data.txt");
     let result = process(file)?;
     println!("The sum of the IDs of those games is: {}", result);
-    assert_eq!(result, "2207");
+    assert_eq!(result, 2207);
     Ok(())
 }
