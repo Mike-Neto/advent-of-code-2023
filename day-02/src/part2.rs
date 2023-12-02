@@ -1,42 +1,33 @@
 use crate::{parse_games, Color};
 
+static COLORS: [Color; 3] = [Color::Red, Color::Green, Color::Blue];
+
 pub fn process(input: &str) -> anyhow::Result<u64> {
     let (_, games) = parse_games(input).map_err(|err| err.to_owned())?;
 
     Ok(games
         .into_iter()
         .map(|g| {
-            let reds = g
-                .sets
+            COLORS
                 .iter()
-                .filter_map(|c| {
-                    c.into_iter()
-                        .find(|c| c.color == Color::Red)
-                        .map(|c| c.number)
+                .filter_map(|color| {
+                    g.sets
+                        .iter()
+                        .map(|set| {
+                            set.iter()
+                                .filter_map(|c| {
+                                    if c.color == *color {
+                                        Some(c.number)
+                                    } else {
+                                        None
+                                    }
+                                })
+                                .max()
+                        })
+                        .max()
+                        .unwrap_or_default()
                 })
-                .max()
-                .unwrap_or_default();
-            let greens = g
-                .sets
-                .iter()
-                .filter_map(|c| {
-                    c.into_iter()
-                        .find(|c| c.color == Color::Green)
-                        .map(|c| c.number)
-                })
-                .max()
-                .unwrap_or_default();
-            let blues = g
-                .sets
-                .iter()
-                .filter_map(|c| {
-                    c.into_iter()
-                        .find(|c| c.color == Color::Blue)
-                        .map(|c| c.number)
-                })
-                .max()
-                .unwrap_or_default();
-            reds * greens * blues
+                .product::<u64>()
         })
         .sum::<u64>())
 }
